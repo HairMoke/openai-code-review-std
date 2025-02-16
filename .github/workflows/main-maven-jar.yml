@@ -30,6 +30,10 @@ jobs:
       - name: Copy openai-code-review-sdk JAR
         run: mvn dependency:copy -Dartifact=com.hb.middleware:openai-code-review-sdk:1.0 -DoutputDirectory=./libs
 
+      - name: Remove signature files from JAR
+        run: |
+          zip -d ./libs/openai-code-review-sdk-1.0.jar 'META-INF/*.SF' 'META-INF/*.DSA' 'META-INF/*.RSA'
+
       - name: Run Code Review
         run: java -jar ./libs/openai-code-review-sdk-1.0.jar
 
