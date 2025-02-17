@@ -13,7 +13,8 @@ public class ApiTest {
 
     @Test
     public void test(){
-        System.out.println("abc,yoyo");
+        int ans = 1+1;
+        System.out.println("abc");
     }
 
 }
