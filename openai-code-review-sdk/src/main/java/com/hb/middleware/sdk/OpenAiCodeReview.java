@@ -104,7 +104,7 @@ public class OpenAiCodeReview {
     private static String writeLog(String token, String log) throws Exception {
 
         Git git = Git.cloneRepository()
-                .setURI("https://github.com/HairMoke/openai-code-review-log")
+                .setURI("https://github.com/HairMoke/openai-code-review-log.git")
                 .setDirectory(new File("repo"))
                 .setCredentialsProvider(new UsernamePasswordCredentialsProvider(token, ""))
                 .call();
@@ -120,8 +120,10 @@ public class OpenAiCodeReview {
             writer.write(log);
         }
         git.add().addFilepattern(dateFloderName + "/" + fileName).call();
-        git.commit().setMessage("add new file").call();
+        git.commit().setMessage("add new file via Github Actions").call();
         git.push().setCredentialsProvider(new UsernamePasswordCredentialsProvider(token, ""));
+
+        System.out.println("Changes have been pushed to the repository.");
 
         return "https://github.com/HairMoke/openai-code-review-log/blob/master/" + dateFloderName + "/" + fileName;
     }
