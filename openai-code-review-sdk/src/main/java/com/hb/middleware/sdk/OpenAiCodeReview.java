@@ -121,7 +121,7 @@ public class OpenAiCodeReview {
         }
         git.add().addFilepattern(dateFloderName + "/" + fileName).call();
         git.commit().setMessage("add new file via Github Actions").call();
-        git.push().setCredentialsProvider(new UsernamePasswordCredentialsProvider(token, ""));
+        git.push().setCredentialsProvider(new UsernamePasswordCredentialsProvider(token, "")).call();
 
         System.out.println("Changes have been pushed to the repository.");
 
