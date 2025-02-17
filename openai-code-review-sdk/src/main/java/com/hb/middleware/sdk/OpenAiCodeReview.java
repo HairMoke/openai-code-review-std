@@ -125,7 +125,7 @@ public class OpenAiCodeReview {
 
         System.out.println("Changes have been pushed to the repository.");
 
-        return "https://github.com/HairMoke/openai-code-review-log/blob/main/" + dateFloderName + "/" + fileName;
+        return "https://github.com/HairMoke/openai-code-review-log/blob/master/" + dateFloderName + "/" + fileName;
     }
 
     private static String generateRandomString(int length) {
