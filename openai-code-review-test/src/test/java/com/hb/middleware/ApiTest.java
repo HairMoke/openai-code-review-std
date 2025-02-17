@@ -13,7 +13,7 @@ public class ApiTest {
 
     @Test
     public void test(){
-        System.out.println("abcdddd");
+        System.out.println("尝试测试代码");
     }
 
 }
