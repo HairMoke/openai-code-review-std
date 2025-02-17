@@ -3,8 +3,10 @@ package com.hb.middleware.sdk;
 import com.alibaba.fastjson2.JSON;
 import com.hb.middleware.sdk.domain.model.ChatCompletionRequest;
 import com.hb.middleware.sdk.domain.model.ChatCompletionSyncResponse;
+import com.hb.middleware.sdk.domain.model.Message;
 import com.hb.middleware.sdk.domain.model.Model;
 import com.hb.middleware.sdk.types.utils.BearerTokenUtils;
+import com.hb.middleware.sdk.types.utils.WXAccessTokenUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
@@ -17,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
+import java.util.Scanner;
 
 public class OpenAiCodeReview {
     public static void main(String[] args) throws Exception{
@@ -49,8 +52,53 @@ public class OpenAiCodeReview {
         String log = codeReview(diffcode.toString());
         System.out.println("code review: " + log);
 
-        // 写入评审日志
-        writeLog(token, log);
+        // 3. 写入评审日志
+        String logUrl = writeLog(token, log);
+        System.out.println("Write Url: " + logUrl);
+
+        // 4. 消息通知
+        System.out.println("Push Message: " + logUrl);
+        pushMessage(logUrl);
+
+    }
+
+
+    private static void pushMessage(String logUrl) {
+        String accessToken = WXAccessTokenUtils.getAccessToken();
+        System.out.println(accessToken);
+
+        Message message = new Message();
+        message.put("project", "big-market");
+        message.put("review", logUrl);
+        message.setUrl(logUrl);
+
+        String url = String.format("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s", accessToken);
+        sendPostRequest(url, JSON.toJSONString(message));
+
+    }
+
+
+    private static void sendPostRequest(String urlString, String jsonBody) {
+        try {
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json; utf-8");
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setDoOutput(true);
+
+            try (OutputStream os = conn.getOutputStream()) {
+                byte[] input = jsonBody.getBytes(StandardCharsets.UTF_8);
+                os.write(input, 0, input.length);
+            }
+
+            try (Scanner scanner = new Scanner(conn.getInputStream(), StandardCharsets.UTF_8.name())) {
+                String response = scanner.useDelimiter("\\A").next();
+                System.out.println(response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private static String codeReview(String diffCode) throws IOException {
