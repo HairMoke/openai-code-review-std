@@ -5,16 +5,27 @@ import com.hb.middleware.sdk.domain.model.ChatCompletionRequest;
 import com.hb.middleware.sdk.domain.model.ChatCompletionSyncResponse;
 import com.hb.middleware.sdk.domain.model.Model;
 import com.hb.middleware.sdk.types.utils.BearerTokenUtils;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Random;
 
 public class OpenAiCodeReview {
     public static void main(String[] args) throws Exception{
-        System.out.println("测试执行!");
+        System.out.println("openai 代码评审 测试执行!");
+
+        String token = System.getenv("GITHUB_TOKEN");
+        if(null == token || token.isEmpty()){
+            throw new RuntimeException("token is null");
+        }
 
         // 1. 代码检出
         ProcessBuilder processBuilder = new ProcessBuilder("git", "diff", "HEAD~1", "HEAD");
@@ -37,6 +48,9 @@ public class OpenAiCodeReview {
         // 2. chatglm 代码评审
         String log = codeReview(diffcode.toString());
         System.out.println("code review: " + log);
+
+        // 写入评审日志
+        writeLog(token, log);
     }
 
     private static String codeReview(String diffCode) throws IOException {
@@ -85,4 +99,41 @@ public class OpenAiCodeReview {
 //        System.out.println(response.getChoices().get(0).getMessage().getContent());
         return response.getChoices().get(0).getMessage().getContent();
     }
+
+
+    private static String writeLog(String token, String log) throws Exception {
+
+        Git git = Git.cloneRepository()
+                .setURI("https://github.com/HairMoke/openai-code-review-log")
+                .setDirectory(new File("repo"))
+                .setCredentialsProvider(new UsernamePasswordCredentialsProvider(token, ""))
+                .call();
+        String dateFloderName = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        File dateFolder = new File("repo/" + dateFloderName);
+        if(!dateFolder.exists()){
+            dateFolder.mkdirs();
+        }
+
+        String fileName = generateRandomString(12) + ".md";
+        File newFile = new File(dateFolder, fileName);
+        try(FileWriter writer = new FileWriter(newFile)) {
+            writer.write(log);
+        }
+        git.add().addFilepattern(dateFloderName + "/" + fileName).call();
+        git.commit().setMessage("add new file").call();
+        git.push().setCredentialsProvider(new UsernamePasswordCredentialsProvider(token, ""));
+
+        return "https://github.com/HairMoke/openai-code-review-log/blob/master/" + dateFloderName + "/" + fileName;
+    }
+
+    private static String generateRandomString(int length) {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            sb.append(characters.charAt(random.nextInt(characters.length())));
+        }
+        return sb.toString();
+    }
+
 }
