@@ -3,10 +3,10 @@ name: Build and Run OpenAiCodeReview By Main Maven Jar
 on:
   push:
     branches:
-      - master-close
+      - master
   pull_request:
     branches:
-      - master-close
+      - master
 
 jobs:
   build:
@@ -24,11 +24,11 @@ jobs:
           distribution: 'adopt'
           java-version: '8'
 
-      - name: Build with Maven
-        run: mvn clean install
+      - name: Create libs directory
+        run: mkdir -p ./libs
 
-      - name: Copy openai-code-review-sdk JAR
-        run: mvn dependency:copy -Dartifact=com.hb.middleware:openai-code-review-sdk:1.0 -DoutputDirectory=./libs
+      - name: Download openai-code-review-sdk JAR
+        run: wget -0 ./libs/openai-code-review-sdk-1.0.jar https://github.com/HairMoke/openai-code-review/releases/download/v1.0/openai-code-review-sdk-1.0.jar
 
       # 报签名的错误，加上这个，移除签名
       - name: Remove signature files from JAR
