@@ -31,9 +31,9 @@ jobs:
         run: wget -O ./libs/openai-code-review-sdk-1.0.jar https://gitcode.com/shall_zhao/openai-code-review/releases/v1.0/openai-code-review-sdk-1.0.jar
 
       # 报签名的错误，加上这个，移除签名
-      - name: Remove signature files from JAR
-        run: |
-          zip -d ./libs/openai-code-review-sdk-1.0.jar 'META-INF/*.SF' 'META-INF/*.DSA' 'META-INF/*.RSA'
+#      - name: Remove signature files from JAR
+#        run: |
+#          zip -d ./libs/openai-code-review-sdk-1.0.jar 'META-INF/*.SF' 'META-INF/*.DSA' 'META-INF/*.RSA'
 
       - name: Get repository name
         id: repo-name
