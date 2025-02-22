@@ -2,7 +2,9 @@ package com.hb.middleware.sdk;
 
 
 import com.hb.middleware.sdk.domain.service.Impl.OpenAiCodeReviewService;
+import com.hb.middleware.sdk.infrastructure.git.BaseGitOperation;
 import com.hb.middleware.sdk.infrastructure.git.GitCommand;
+import com.hb.middleware.sdk.infrastructure.git.impl.GitRestAPIOperation;
 import com.hb.middleware.sdk.infrastructure.openai.IOpenAI;
 import com.hb.middleware.sdk.infrastructure.openai.impl.ChatGLM;
 import com.hb.middleware.sdk.infrastructure.weixin.WeiXin;
@@ -56,8 +58,23 @@ public class OpenAiCodeReview {
                 getEnv("CHATGLM_APIKEYSECRET")
         );
 
+        BaseGitOperation baseGitOperation = new GitRestAPIOperation(
+                getEnv("GIT_CHECK_COMMIT_URL"),
+                getEnv("GITHUB_TOKEN")
+        );
+
+        // 创建OpenAiCodeReviewService实例， 将所有组件组合在一起
+        OpenAiCodeReviewService openAiCodeReviewService = new OpenAiCodeReviewService(baseGitOperation, gitCommand, openai, weiXin);
+
+        // 执行代码评审流程
+        openAiCodeReviewService.exec();
+
+
+/**
         OpenAiCodeReviewService openAiCodeReviewService = new OpenAiCodeReviewService(gitCommand, openai, weiXin);
         openAiCodeReviewService.exec();
+ */
+
 
         logger.info("openai-code-review done! ");
 

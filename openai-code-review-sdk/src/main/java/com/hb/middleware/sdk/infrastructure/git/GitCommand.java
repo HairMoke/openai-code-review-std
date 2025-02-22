@@ -1,7 +1,6 @@
 package com.hb.middleware.sdk.infrastructure.git;
 
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +10,7 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class GitCommand {
+public class GitCommand implements BaseGitOperation {
 
     private final Logger logger = LoggerFactory.getLogger(GitCommand.class);
 

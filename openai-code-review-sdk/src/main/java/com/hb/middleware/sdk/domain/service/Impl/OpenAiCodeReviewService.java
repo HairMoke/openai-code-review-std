@@ -1,13 +1,16 @@
 package com.hb.middleware.sdk.domain.service.Impl;
 
+import com.hb.middleware.sdk.OpenAiCodeReview;
 import com.hb.middleware.sdk.domain.model.Model;
 import com.hb.middleware.sdk.domain.service.AbstractOpenAiReviewService;
+import com.hb.middleware.sdk.infrastructure.git.BaseGitOperation;
 import com.hb.middleware.sdk.infrastructure.git.GitCommand;
 import com.hb.middleware.sdk.infrastructure.openai.IOpenAI;
 import com.hb.middleware.sdk.infrastructure.openai.dto.ChatCompletionRequestDto;
 import com.hb.middleware.sdk.infrastructure.openai.dto.ChatCompletionSyncResponseDto;
 import com.hb.middleware.sdk.infrastructure.weixin.WeiXin;
 import com.hb.middleware.sdk.infrastructure.weixin.dto.TemplateMessageDto;
+import org.eclipse.jgit.api.Git;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,14 +19,27 @@ import java.util.Map;
 
 public class OpenAiCodeReviewService extends AbstractOpenAiReviewService {
 
+    private BaseGitOperation gitOperation;
+
     public OpenAiCodeReviewService(GitCommand gitCommand, IOpenAI openAI, WeiXin weiXin) {
         super(gitCommand, openAI, weiXin);
     }
 
+    public OpenAiCodeReviewService(BaseGitOperation gitOperation, GitCommand gitCommand, IOpenAI openAI, WeiXin weiXin){
+        super(gitCommand, openAI, weiXin);
+        this.gitOperation = gitOperation;
+    }
+
+    @Override
+    protected String getDiffCode() throws Exception {
+        return this.gitOperation.diff();
+    }
+
+    /**
     @Override
     protected String getDiffCode() throws IOException, InterruptedException {
         return gitCommand.diff();
-    }
+    }*/
 
     @Override
     protected String codeReview(String diffCode) throws Exception {
