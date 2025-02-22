@@ -5,14 +5,14 @@ import com.hb.middleware.sdk.infrastructure.git.BaseGitOperation;
 import com.hb.middleware.sdk.infrastructure.git.dto.SingleCommitResponseDTO;
 import com.hb.middleware.sdk.types.utils.DefaultHttpUtil;
 import org.slf4j.LoggerFactory;
-
+import org.slf4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
+
 
 public class GitRestAPIOperation implements BaseGitOperation {
 
-    private final Logger logger = (Logger) LoggerFactory.getLogger(GitRestAPIOperation.class);
+    private final Logger logger = LoggerFactory.getLogger(GitRestAPIOperation.class);
 
     private final String githubRepoUrl;
 
