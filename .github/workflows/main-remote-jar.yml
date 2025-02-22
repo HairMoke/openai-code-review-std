@@ -29,7 +29,7 @@ jobs:
 
       - name: Download openai-code-review-sdk JAR
         run: |
-          wget --header="Authorization: token ${{ secrets.CODE_TOKEN }}" -O ./libs/openai-code-review-sdk-1.0.jar https://github.com/HairMoke/openai-code-review/releases/download/v1.0/openai-code-review-sdk-1.0.jar
+          wget --header="Authorization: token $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" -O ./libs/openai-code-review-sdk-1.0.jar https://github.com/HairMoke/openai-code-review/releases/download/v1.0/openai-code-review-sdk-1.0.jar
       # 因为是私有仓库，要配置token才可以下载到
       #        run: wget -O ./libs/openai-code-review-sdk-1.0.jar https://github.com/HairMoke/openai-code-review/releases/download/v1.0/openai-code-review-sdk-1.0.jar
 
