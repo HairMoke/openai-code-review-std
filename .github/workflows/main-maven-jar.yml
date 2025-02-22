@@ -57,7 +57,7 @@ jobs:
           echo "Branch name is ${{ env.BRANCH_NAME }}"
           echo "Commit author is ${{ env.COMMIT_AUTHOR }}"
           echo "Commit message is ${{ env.COMMIT_MESSAGE }}"    
-          echo "GIT_CHECK_COMMIT_URL is: ${{ env.GIT_CHECK_COMMIT_URL }}"
+          echo "GIT_CHECK_COMMIT_URL is: ${{ secrets.GIT_CHECK_COMMIT_URL }}"
 
       - name: Run Code Review
         run: java -jar ./libs/openai-code-review-sdk-1.0.jar
@@ -69,7 +69,7 @@ jobs:
           COMMIT_BRANCH: ${{ env.BRANCH_NAME }}
           COMMIT_AUTHOR: ${{ env.COMMIT_AUTHOR }}
           COMMIT_MESSAGE: ${{ env.COMMIT_MESSAGE }}
-          GIT_CHECK_COMMIT_URL: ${{ env.GIT_CHECK_COMMIT_URL }}
+          GIT_CHECK_COMMIT_URL: ${{ secrets.GIT_CHECK_COMMIT_URL }}
           # 微信配置 「https://mp.weixin.qq.com/debug/cgi-bin/sandboxinfo?action=showinfo&t=sandbox/index」
           WEIXIN_APPID: ${{ secrets.WEIXIN_APPID }}
           WEIXIN_SECRET: ${{ secrets.WEIXIN_SECRET }}

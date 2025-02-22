@@ -11,6 +11,12 @@ import com.hb.middleware.sdk.infrastructure.weixin.WeiXin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
+/**
+ * 问题未解决：
+ * 1. jar报方式运行 报错404 下载不到jar包
+ * 2. 发送的微信推送没能进入到正确的.md文件
+ */
 public class OpenAiCodeReview {
 
     private static final Logger logger = LoggerFactory.getLogger(OpenAiCodeReview.class);
@@ -62,6 +68,7 @@ public class OpenAiCodeReview {
                 getEnv("GIT_CHECK_COMMIT_URL"),
                 getEnv("GITHUB_TOKEN")
         );
+
 
         // 创建OpenAiCodeReviewService实例， 将所有组件组合在一起
         OpenAiCodeReviewService openAiCodeReviewService = new OpenAiCodeReviewService(baseGitOperation, gitCommand, openai, weiXin);
