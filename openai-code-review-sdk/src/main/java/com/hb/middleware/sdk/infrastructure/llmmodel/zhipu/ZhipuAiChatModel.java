@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 public class ZhipuAiChatModel implements ChatLanguageModel {
 
-    private final  String model;
+    private final String model;
     private final ZhipuAiHttpClient client;
 
     @Builder

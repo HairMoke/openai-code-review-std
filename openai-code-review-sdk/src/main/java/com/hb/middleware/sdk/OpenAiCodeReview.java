@@ -5,9 +5,12 @@ import com.hb.middleware.sdk.domain.service.Impl.OpenAiCodeReviewService;
 import com.hb.middleware.sdk.infrastructure.git.BaseGitOperation;
 import com.hb.middleware.sdk.infrastructure.git.GitCommand;
 import com.hb.middleware.sdk.infrastructure.git.impl.GitRestAPIOperation;
+import com.hb.middleware.sdk.infrastructure.message.IMessageStrategy;
+import com.hb.middleware.sdk.infrastructure.message.MessageFactory;
 import com.hb.middleware.sdk.infrastructure.openai.IOpenAI;
 import com.hb.middleware.sdk.infrastructure.openai.impl.ChatGLM;
 import com.hb.middleware.sdk.infrastructure.weixin.WeiXin;
+import com.hb.middleware.sdk.types.utils.EnvUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +20,7 @@ import org.slf4j.LoggerFactory;
  * 1. jar报方式运行 报错404 下载不到jar包
  * 2. 发送的微信推送没能进入到正确的.md文件
  * 3. ZhipuAiHelper还可以用设计模式进一步封装
+ * 4. 第二期，第二节没跑通
  */
 public class OpenAiCodeReview {
 
@@ -45,33 +49,37 @@ public class OpenAiCodeReview {
 
     public static void main(String[] args) throws Exception {
         GitCommand gitCommand = new GitCommand(
-                getEnv("GITHUB_REVIEW_LOG_URI"),
-                getEnv("GITHUB_TOKEN"),
-                getEnv("COMMIT_PROJECT"),
-                getEnv("COMMIT_BRANCH"),
-                getEnv("COMMIT_AUTHOR"),
-                getEnv("COMMIT_AUTHOR")
+                EnvUtil.getEnv("GITHUB_REVIEW_LOG_URI"),
+                EnvUtil.getEnv("GITHUB_TOKEN"),
+                EnvUtil.getEnv("COMMIT_PROJECT"),
+                EnvUtil.getEnv("COMMIT_BRANCH"),
+                EnvUtil.getEnv("COMMIT_AUTHOR"),
+                EnvUtil.getEnv("COMMIT_AUTHOR")
         );
 
         WeiXin weiXin = new WeiXin(
-                getEnv("WEIXIN_APPID"),
-                getEnv("WEIXIN_SECRET"),
-                getEnv("WEIXIN_TOUSER"),
-                getEnv("WEIXIN_TEMPLATE_ID")
+                EnvUtil.getEnv("WEIXIN_APPID"),
+                EnvUtil.getEnv("WEIXIN_SECRET"),
+                EnvUtil.getEnv("WEIXIN_TOUSER"),
+                EnvUtil.getEnv("WEIXIN_TEMPLATE_ID")
         );
 
         IOpenAI openai = new ChatGLM(
-                getEnv("CHATGLM_APIHOST"),
-                getEnv("CHATGLM_APIKEYSECRET")
+                EnvUtil.getEnv("CHATGLM_APIHOST"),
+                EnvUtil.getEnv("CHATGLM_APIKEYSECRET")
         );
 
         BaseGitOperation baseGitOperation = new GitRestAPIOperation(
-                getEnv("GIT_CHECK_COMMIT_URL"),
-                getEnv("GITHUB_TOKEN")
+                EnvUtil.getEnv("GIT_CHECK_COMMIT_URL"),
+                EnvUtil.getEnv("GITHUB_TOKEN")
         );
 
+        // 获得当前消息的通知类型
+        String notifyType = EnvUtil.getEnv("NOTIFY_TYPE");
+        IMessageStrategy messageStrategy = MessageFactory.getMessageStrategy(notifyType);
 
         // 创建OpenAiCodeReviewService实例， 将所有组件组合在一起
+//        OpenAiCodeReviewService openAiCodeReviewService = new OpenAiCodeReviewService(baseGitOperation, gitCommand, openai, messageStrategy);
         OpenAiCodeReviewService openAiCodeReviewService = new OpenAiCodeReviewService(baseGitOperation, gitCommand, openai, weiXin);
 
         // 执行代码评审流程
@@ -88,12 +96,6 @@ public class OpenAiCodeReview {
 
     }
 
-    private static String getEnv(String key) {
-        String value = System.getenv(key);
-        if(null == value || value.isEmpty()) {
-            throw new RuntimeException("get env is null");
-        }
-        return value;
-    }
+
 
 }
