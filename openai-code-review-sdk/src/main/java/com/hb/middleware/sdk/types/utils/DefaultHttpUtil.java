@@ -3,6 +3,7 @@ package com.hb.middleware.sdk.types.utils;
 import com.alibaba.fastjson2.JSON;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -69,5 +70,13 @@ public class DefaultHttpUtil {
         in.close();
         connection.disconnect();
         return content.toString();
+    }
+
+    public static InputStream getHttpInputStream(String uri) throws Exception{
+        URL url = new URL(uri);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setDoOutput(true);
+        return connection.getInputStream();
     }
 }
