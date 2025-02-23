@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
  * 问题未解决：
  * 1. jar报方式运行 报错404 下载不到jar包
  * 2. 发送的微信推送没能进入到正确的.md文件
+ * 3. ZhipuAiHelper还可以用设计模式进一步封装
  */
 public class OpenAiCodeReview {
 
