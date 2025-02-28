@@ -15,7 +15,6 @@ public class ApiTest {
     public void test(){
         System.out.println("123456789101");
         System.out.println("测试代码的可行性-----");
-        System.out.println("测试代码的可行性-----");
     }
 
 }

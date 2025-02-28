@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
  * 2. 发送的微信推送没能进入到正确的.md文件
  * 3. ZhipuAiHelper还可以用设计模式进一步封装
  * 4. 第二期，第二节没跑通
+ * 上面的问题待解决
  */
 public class OpenAiCodeReview {
 
@@ -78,7 +79,7 @@ public class OpenAiCodeReview {
         String notifyType = EnvUtil.getEnv("NOTIFY_TYPE");
         IMessageStrategy messageStrategy = MessageFactory.getMessageStrategy(notifyType);
 
-        // 创建OpenAiCodeReviewService实例， 将所有组件组合在一起
+        // 创建OpenAiCodeReviewService实例， 将所有组件组合在一起，
 //        OpenAiCodeReviewService openAiCodeReviewService = new OpenAiCodeReviewService(baseGitOperation, gitCommand, openai, messageStrategy);
         OpenAiCodeReviewService openAiCodeReviewService = new OpenAiCodeReviewService(baseGitOperation, gitCommand, openai, weiXin);
 
